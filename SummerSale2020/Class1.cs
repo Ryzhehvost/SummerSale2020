@@ -38,6 +38,9 @@ namespace SummerSale2020 {
 
 			Regex re = new Regex("&quot;webapi_token&quot;:&quot;([^&]*)&quot;");
 			MatchCollection reResult = re.Matches(html.DocumentElement.InnerHtml);
+			if (reResult.Count < 1 || reResult[0].Groups.Count < 2) {
+				return "<" + bot.BotName + "> Failed!";
+			}
 			string webApiToken = reResult[0].Groups[1].Value;
 
 			Dictionary<string, string> data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { "input_protobuf_encoded", "" } };
