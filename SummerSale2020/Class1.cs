@@ -32,6 +32,9 @@ namespace SummerSale2020 {
 			const string html_request = "/points/shop";
 
 			IDocument html = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(ArchiWebHandler.SteamStoreURL, html_request).ConfigureAwait(false);
+			if (html == null) {
+				return "<" + bot.BotName + "> Failed!";
+			}
 
 			Regex re = new Regex("&quot;webapi_token&quot;:&quot;([^&]*)&quot;");
 			MatchCollection reResult = re.Matches(html.DocumentElement.InnerHtml);
@@ -41,7 +44,7 @@ namespace SummerSale2020 {
 
 			WebBrowser.BasicResponse response = await ArchiWebHandler.WebLimitRequest(WebAPI.DefaultBaseAddress.Host, async () => await bot.ArchiWebHandler.WebBrowser.UrlPost(post_request + webApiToken, data, ArchiWebHandler.SteamStoreURL + html_request).ConfigureAwait(false)).ConfigureAwait(false);
 
-			if (response.StatusCode == System.Net.HttpStatusCode.OK) {
+			if (response != null && response.StatusCode == System.Net.HttpStatusCode.OK) {
 				return "<" + bot.BotName + "> Done!";
 			} else {
 				return "<" + bot.BotName + "> Failed!";
@@ -61,7 +64,7 @@ namespace SummerSale2020 {
 
 			AutoTimer.Change(TimeSpan.FromHours(8), TimeSpan.FromHours(8));
 
-			ASF.ArchiLogger.LogGenericInfo(Environment.NewLine+string.Join(Environment.NewLine, responses));
+			ASF.ArchiLogger.LogGenericInfo(Environment.NewLine + string.Join(Environment.NewLine, responses));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 		public async Task<string> OnBotCommand([NotNull] Bot bot, ulong steamID, [NotNull] string message, [ItemNotNull, NotNull] string[] args) {
