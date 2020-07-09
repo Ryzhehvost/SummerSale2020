@@ -24,8 +24,6 @@ namespace SummerSale2020 {
 		public string Name => "SummerSale2020";
 		public Version Version => typeof(Class1).Assembly.GetName().Version;
 
-		private static Timer AutoTimer;
-
 		private static async Task<string> GetSticker(Bot bot) {
 
 			const string post_request = "https://api.steampowered.com/ISummerSale2020Service/ClaimItem/v1?access_token=";
@@ -65,8 +63,6 @@ namespace SummerSale2020 {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
-			AutoTimer.Change(TimeSpan.FromHours(8), TimeSpan.FromHours(8));
-
 			ASF.ArchiLogger.LogGenericInfo(Environment.NewLine + string.Join(Environment.NewLine, responses));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -88,12 +84,12 @@ namespace SummerSale2020 {
 
 		public void OnLoaded() {
 			ASF.ArchiLogger.LogGenericInfo("SummerSale2020 Plugin by Ryzhehvost, powered by ginger cats");
-			AutoTimer = new Timer(
+			new Timer(
 				async e => await ClaimSticker("ASF").ConfigureAwait(false),
 				null,
 				TimeSpan.FromHours(1),
-				TimeSpan.FromHours(1)
-		);
+				TimeSpan.FromHours(8)
+			);
 		}
 	}
 }
